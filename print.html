@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PR TIMESはなぜAIに拾われるのか — AIに参照されやすいプレスリリースの書き方</title>
+<style>
+@page{size:A4 portrait;margin:0}
+:root{
+  --c-primary:#1A3F8C;
+  --c-primary-dark:#13316F;
+  --c-accent:#F08C2E;
+  --c-blue-tint:#E8F1FB;
+  --c-line:#D7DCE3;
+  --c-text:#1A1A1A;
+  --c-sub:#555;
+  --c-muted:#888;
+  --c-good:#1A3F8C;
+  --c-bad:#C44545;
+  --font-jp:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo","Noto Sans JP",sans-serif;
+}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;padding:0;background:#fff}
+body{font-family:var(--font-jp);font-size:11pt;line-height:1.75;color:var(--c-text);-webkit-font-smoothing:antialiased}
+
+.page{
+  position:relative;
+  width:210mm;height:297mm;
+  padding:18mm 18mm 14mm;
+  page-break-after:always;
+  background:#fff;
+  overflow:hidden;
+}
+.page:last-child{page-break-after:auto}
+
+/* header / footer common */
+.ph{position:absolute;left:18mm;right:18mm;top:8mm;display:flex;align-items:center;justify-content:space-between;font-size:8pt;color:var(--c-sub);padding-bottom:4px;border-bottom:1px solid var(--c-line);z-index:2}
+.ph .crumb{font-weight:700;color:var(--c-text);font-size:8pt}
+.ph img{height:5mm;width:auto}
+.pf{position:absolute;left:18mm;right:18mm;bottom:8mm;display:flex;align-items:center;justify-content:space-between;font-size:7pt;color:var(--c-muted);padding-top:4px;border-top:1px solid var(--c-line)}
+.pf .rp{width:7mm;height:auto;display:block}
+.pf .pn{font-weight:800;color:var(--c-primary);font-size:10pt}
+
+/* Chapter-intro variant: header line + small text on blue banner */
+.chap-intro .ph{background:transparent;color:#fff;border-bottom:1px solid rgba(255,255,255,.35)}
+.chap-intro .ph .crumb{color:#fff}
+
+/* Cover */
+.cover{padding:0;background:#F2F4F7;display:flex;flex-direction:column}
+.cover-top{display:flex;align-items:center;justify-content:space-between;padding:12mm 16mm 0}
+.cover-top img.lg{height:10mm;width:auto}
+.cover-top .pg{font-weight:700;color:var(--c-primary);font-size:11pt;display:flex;align-items:center;gap:3mm}
+.cover-top .pg img{height:8mm;width:auto;display:inline-block}
+.cover-divider{height:1px;background:var(--c-primary);margin:5mm 16mm 0;opacity:.18}
+.cover-body{padding:36mm 18mm 0;flex:1}
+.cover-tag{display:inline-block;padding:2mm 6mm;border:2px solid var(--c-primary);border-radius:30mm;font-weight:700;color:var(--c-primary);font-size:12pt;margin-bottom:8mm}
+.cover-title{font-size:36pt;font-weight:900;line-height:1.25;color:var(--c-primary-dark);margin:0 0 6mm;letter-spacing:.01em}
+.cover-title .ac{color:var(--c-accent)}
+.cover-sub{font-size:16pt;font-weight:800;color:var(--c-primary-dark);margin:0 0 12mm}
+.cover-stat{display:flex;gap:4mm;align-items:flex-start;margin-top:10mm;padding:6mm 7mm;background:#fff;border-radius:3mm;max-width:170mm;border-left:1.5mm solid var(--c-accent)}
+.cover-stat .badge{flex:0 0 auto;width:14mm;height:14mm;border-radius:50%;background:var(--c-accent);color:#fff;font-weight:800;font-size:10pt;display:flex;align-items:center;justify-content:center}
+.cover-stat .txt{font-weight:700;font-size:12pt;line-height:1.6;color:#222}
+.cover-stat .txt b{color:var(--c-accent);font-size:14pt}
+.cover-foot{margin-top:auto;padding:6mm 16mm 8mm;font-size:7pt;color:var(--c-muted);display:flex;justify-content:flex-end;align-items:center}
+
+/* h titles */
+.h-intro{font-size:22pt;font-weight:800;color:#fff;background:var(--c-primary);margin:-18mm -18mm 8mm;padding:28mm 18mm 12mm}
+.chap-banner{margin:-18mm -18mm 10mm;background:var(--c-primary);color:#fff;padding:30mm 18mm 14mm;display:flex;align-items:center;gap:6mm}
+.chap-banner .num{font-size:38pt;font-weight:800;line-height:1;font-family:"Helvetica Neue",sans-serif}
+.chap-banner .title{font-size:18pt;font-weight:800;line-height:1.3}
+
+.h-section{position:relative;font-size:13pt;font-weight:800;color:var(--c-primary-dark);padding-left:6mm;margin:8mm 0 3mm}
+.h-section::before{content:"";position:absolute;left:0;top:1.5mm;width:3mm;height:5mm;background:var(--c-primary)}
+.lead{font-size:10.5pt;color:var(--c-text);line-height:1.85;margin:0 0 3mm}
+.lead b,.lead strong{color:var(--c-primary);font-weight:700}
+.lead .ac{color:var(--c-accent);font-weight:800}
+.bullets{margin:2mm 0 3mm;padding:0 0 0 6mm}
+.bullets li{margin:1mm 0;font-size:10pt}
+
+.callout{margin:5mm 0;padding:5mm 6mm;background:#F0F4FB;border-radius:2mm;border:1px solid #D8E3F4}
+.callout .ttl{font-weight:800;color:var(--c-primary);font-size:10.5pt;margin-bottom:2mm}
+.callout .meta{font-size:9.5pt;color:var(--c-sub);line-height:1.75}
+.callout .meta div{margin:0.5mm 0}
+
+/* rank box */
+.rank-box{background:#fff;border:1px solid #D9E5D9;border-radius:3mm;padding:5mm 6mm;margin:5mm 0}
+.rb-h{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid #E5EAE5;padding-bottom:2mm;margin-bottom:3mm}
+.rb-h .ttl{font-weight:800;color:#1A1A1A;font-size:11pt;display:flex;align-items:center;gap:3mm}
+.rb-h .ttl .dot{display:inline-block;width:5mm;height:5mm;border-radius:50%;background:#5DBB63;flex:0 0 auto}
+.rb-h .sub{font-size:8pt;color:var(--c-muted)}
+.rank-row{display:flex;align-items:center;gap:3mm;margin:1.5mm 0}
+.rank-row .lab{flex:0 0 40mm;font-size:9pt;color:#222;font-weight:600}
+.rank-row .bar{flex:1;height:4mm;background:#E8F1E5;border-radius:1mm;position:relative;overflow:hidden}
+.rank-row .bar > i{display:block;height:100%;background:#5DBB63;border-radius:1mm}
+.rank-row .val{flex:0 0 22mm;text-align:right;font-size:9pt;font-weight:700;color:#222}
+.rank-tag{margin-top:2mm;font-size:8pt;color:var(--c-muted)}
+
+/* reason */
+.reason{margin:5mm 0;padding:4mm 6mm;background:#F8FAFE;border-left:1.5mm solid var(--c-primary);border-radius:0 2mm 2mm 0}
+.reason h4{margin:0 0 2mm;color:var(--c-primary-dark);font-size:11.5pt;font-weight:800;display:flex;align-items:center;gap:3mm}
+.reason h4 .nm{display:inline-flex;align-items:center;justify-content:center;width:7mm;height:7mm;border-radius:50%;background:var(--c-primary);color:#fff;font-size:9pt}
+
+/* points */
+.point{margin:6mm 0;padding:0;background:#F8FAFE;border:1px solid #D8E3F4;border-radius:3mm;overflow:hidden}
+.point > h4{margin:0;padding:3.5mm 6mm;background:var(--c-primary);color:#fff;font-size:11.5pt;font-weight:800}
+.point > h4 small{display:block;font-size:8.5pt;opacity:.9;font-weight:600;margin-top:.5mm}
+.point > .pbody{padding:4mm 6mm}
+.point > .pbody .lead{font-size:10pt;line-height:1.8}
+
+/* good/bad */
+.ex-card{margin:5mm 0;border-radius:3mm;overflow:hidden;border:1px solid var(--c-line);background:#fff}
+.ex-card .head{padding:3mm 6mm;font-weight:800;color:#fff;font-size:11pt;display:flex;align-items:center;gap:3mm}
+.ex-card.bad .head{background:var(--c-bad)}
+.ex-card.good .head{background:var(--c-good)}
+.ex-card .head .mk{display:inline-flex;align-items:center;justify-content:center;width:6mm;height:6mm;border-radius:50%;background:rgba(255,255,255,.25);font-size:10pt;font-weight:900}
+.ex-card .body{padding:4mm 6mm;font-size:9.5pt;line-height:1.75}
+.ex-card .body .lbl{display:inline-block;font-size:8.5pt;font-weight:700;background:#F0F4FB;color:var(--c-primary);padding:.8mm 2.5mm;border-radius:1mm;margin:3mm 0 1.5mm}
+.ex-card .body p{margin:1.5mm 0 3mm}
+.ex-card .commentary{margin-top:2mm;padding:3mm 5mm;background:#FAFAFA;border-top:1px dashed var(--c-line);font-size:9pt;color:#444;line-height:1.8}
+
+/* index */
+.index-list{margin:5mm 0;padding:0;list-style:none}
+.index-list > li{margin:1mm 0;display:flex;align-items:baseline;gap:4mm;padding:2mm 0;border-bottom:1px dotted #D8E3F4}
+.index-list > li .num{font-weight:800;color:var(--c-primary);font-family:"Helvetica Neue",sans-serif;font-size:13pt;flex:0 0 10mm}
+.index-list > li .ttl{flex:1;font-weight:700;color:#222;font-size:11pt}
+.index-list > li .pn{flex:0 0 12mm;text-align:right;font-weight:700;color:var(--c-primary);font-family:"Helvetica Neue",sans-serif;font-size:11pt}
+.index-list .sub{margin:1mm 0 1mm 14mm;font-size:10pt;color:#444;display:flex;align-items:baseline;border-bottom:0;padding:0}
+.index-list .sub::before{content:"";flex:0 0 1.5mm;width:1.5mm;height:1.5mm;background:var(--c-primary);border-radius:.3mm;margin-right:2mm;align-self:center}
+
+/* plans */
+.plan-box{margin:5mm 0;border:1.2px solid var(--c-primary);border-radius:3mm;padding:5mm 6mm;background:linear-gradient(180deg,#fff 0%,#F4F8FF 100%)}
+.plan-box .tag{display:inline-block;background:var(--c-primary);color:#fff;font-weight:800;font-size:9pt;padding:1mm 4mm;border-radius:20mm;margin-bottom:3mm}
+.plan-box .ttl-row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:2mm}
+.plan-box .ttl{font-size:12pt;font-weight:800;color:var(--c-primary-dark)}
+.plan-box .price{font-size:18pt;font-weight:900;color:var(--c-accent)}
+.plan-box .price .sm{font-size:10pt;font-weight:700;color:var(--c-accent)}
+.plan-box .lead{font-size:10pt}
+
+/* refs */
+.refs{font-size:9pt;color:#333;line-height:1.8}
+.refs .item{margin:2mm 0;padding-left:8mm;position:relative}
+.refs .item .lbl{position:absolute;left:0;top:0;font-weight:800;color:var(--c-primary)}
+.refs .item .src{font-weight:700;color:#222}
+.refs a{color:#1A5BD2;word-break:break-all;text-decoration:none}
+
+.note{font-size:8.5pt;color:var(--c-muted);margin:2mm 0;line-height:1.65}
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<section class="page cover">
+  <div class="cover-top">
+    <img class="lg" src="assets/logo-color-light.png" alt="IDEATECH">
+    <div class="pg"><span>Perfect Guide 2026</span><img src="assets/repopi.png" alt="レポピー"></div>
+  </div>
+  <div class="cover-divider"></div>
+  <div class="cover-body">
+    <div class="cover-tag">PR TIMES × AI</div>
+    <h1 class="cover-title">PR TIMESはなぜ<br><span class="ac">AI</span>に拾われるのか</h1>
+    <h2 class="cover-sub">ーー AIに参照されやすいプレスリリースの書き方</h2>
+    <div class="cover-stat">
+      <div class="badge">調査</div>
+      <div class="txt">
+        Ahrefs公表データで、ChatGPTの日本語クエリ引用元<br>
+        <b>prtimes.jp は2位、引用数 95,655回。</b>
+      </div>
+    </div>
+  </div>
+  <div class="cover-foot"><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span></div>
+</section>
+
+<!-- はじめに -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">はじめに</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <h1 class="h-intro">はじめに</h1>
+  <p class="lead">検索上位を狙うための記事づくりから、AIに参照されるための情報づくりへ。企業の情報発信では、考えるべき相手が検索エンジンだけではなくなっています。なかでも注目されているのが<b>PR TIMES</b>です。Ahrefsが2026年4月に公表した分析では、ChatGPTの日本語クエリで引用されたドメインのランキングで、<b>prtimes.jpは2位</b>でした。PR TIMESは、メディア向けの配信先であるだけでなく、AIが企業の公式情報を読み取る公開ページにもなっています。</p>
+  <p class="lead">ただし、やみくもにプレスリリースを出せばよいわけではありません。Googleは、AI表示に特別な追加要件はない一方、重要な内容はテキストで示すことや、関連する複数のサブトピックまで含めて情報が探せることを案内しています。発表の要点、根拠となる数字、補足情報まで一つのページで分かる形に整えることが、AIに参照されるためのPR TIMESでは欠かせません。</p>
+  <p class="lead">本記事では、なぜPR TIMESがAIに参照されるのか、そして参照されやすいプレスリリースはどう作るのかを整理します。</p>
+  <div class="callout">
+    <div class="ttl">本書の前提となる参照データ</div>
+    <div class="meta">
+      <div>● Ahrefs「AI が最も頼りにしているドメイン TOP 10」（2026年4月公表）</div>
+      <div>● Google Search Central「AI features and your website」公式ドキュメント</div>
+      <div>● OpenAI Help Center「ChatGPT search / Publishers and Developers FAQ」</div>
+      <div>● PR TIMES MAGAZINE プレスリリース作成ガイド／調査リリースガイド</div>
+      <div>● PR TIMES 公式発表（利用企業数・月間配信件数）</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">01</span></div>
+</section>
+
+<!-- INDEX -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">INDEX</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <h1 class="h-intro" style="font-size:26pt">INDEX</h1>
+  <ul class="index-list">
+    <li><span class="num">01</span><span class="ttl">今、PR TIMESがAIの引用元として目立っている</span><span class="pn">03</span></li>
+    <li class="sub">SEOから、AIに参照される情報づくりへ</li>
+    <li class="sub">問われるのは、やみくもに出すことではない</li>
+    <li><span class="num">02</span><span class="ttl">なぜPR TIMESはAIに参照されるのか</span><span class="pn">05</span></li>
+    <li class="sub">公開ページとして見つけやすい</li>
+    <li class="sub">発表の骨子が、冒頭でつかみやすい</li>
+    <li class="sub">発信主体と根拠が、同じページにそろいやすい</li>
+    <li class="sub">新しい公式情報が、継続して集まっている</li>
+    <li><span class="num">03</span><span class="ttl">AIに参照されやすいプレスリリースの書き方</span><span class="pn">07</span></li>
+    <li class="sub">Point1：タイトルとリードで、発表の核心を先に出す</li>
+    <li class="sub">Point2：本文の前半で、数字と条件まで書く</li>
+    <li class="sub">Point3：発表だけでなく、前提まで一つのページに置く</li>
+    <li class="sub">Point4：調査データで、「なぜ今か」を示す</li>
+    <li class="sub">Point5：調査概要とグラフは、切り出されても意味が通るようにする</li>
+    <li class="sub">Point6：1本のリリースで、論点を増やしすぎない</li>
+    <li><span class="num">04</span><span class="ttl">AIに参照されないリリースと、されやすいリリース</span><span class="pn">10</span></li>
+    <li class="sub">悪い例：核心がぼやけ、根拠も弱いプレスリリース</li>
+    <li class="sub">良い例：要点・根拠・補足が一続きで読めるプレスリリース</li>
+    <li><span class="num">05</span><span class="ttl">調査PRのプロが手がける「戦略的プレスリリース」</span><span class="pn">13</span></li>
+    <li class="sub">独自調査付き／3本・5本・10本セットでご提供</li>
+  </ul>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">02</span></div>
+</section>
+
+<!-- Chapter 1 p1 -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">01　今、PR TIMESがAIの引用元として目立っている</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <div class="chap-banner"><div class="num">01</div><div class="title">今、PR TIMESがAIの<br>引用元として目立っている</div></div>
+  <h3 class="h-section">SEOから、AIに参照される情報づくりへ</h3>
+  <p class="lead">検索上位を狙うためのコンテンツづくりから、AIに参照されるための情報づくりへ。企業の情報発信は、いまその方向へ意識が移っています。なかでも注目されているのが、<b>PR TIMES</b>です。</p>
+  <p class="lead">Ahrefsが2026年4月に公表した分析では、ChatGPTの日本語クエリで引用されたドメインのランキングで、<b>prtimes.jpは2位</b>でした。引用数は<span class="ac"><b>95,655</b></span>です。Ahrefsは、この結果について、プレスリリースがAIに「公式情報」として認識・引用されている動きだと説明しています。PR TIMESは、メディアに情報を届ける場であるだけでなく、AIが企業の発表を参照する公開情報の場にもなっています。</p>
+  <div class="rank-box">
+    <div class="rb-h"><div class="ttl"><span class="dot"></span>ChatGPT <span style="font-weight:500;font-size:9pt;color:#555">引用ドメインTOP5</span></div><div class="sub">2025年12月〜2026年3月 合計データ</div></div>
+    <div class="rank-row"><div class="lab">1位：Ameblo</div><div class="bar"><i style="width:100%"></i></div><div class="val">103,459 回</div></div>
+    <div class="rank-row"><div class="lab">2位：PR TIMES</div><div class="bar"><i style="width:92%"></i></div><div class="val">95,655 回</div></div>
+    <div class="rank-row"><div class="lab">3位：Wikipedia 英</div><div class="bar"><i style="width:69%;opacity:.65"></i></div><div class="val">71,950 回</div></div>
+    <div class="rank-row"><div class="lab">4位：楽天市場</div><div class="bar"><i style="width:51%;opacity:.65"></i></div><div class="val">53,147 回</div></div>
+    <div class="rank-row"><div class="lab">5位：note</div><div class="bar"><i style="width:51%;opacity:.65"></i></div><div class="val">52,679 回</div></div>
+    <div class="rank-tag">特徴：ブログ・プレスリリース重視 ／ 出典：Ahrefs Brand Radar（2026年4月公表）</div>
+  </div>
+  <p class="note">参照：Ahrefs「AI が最も頼りにしているドメイン TOP 10」<br>https://ahrefs.com/blog/ja/brand-radar-top-10-cited-domains-2026-update/</p>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">03</span></div>
+</section>
+
+<!-- Chapter 1 p2 -->
+<section class="page">
+  <div class="ph"><span class="crumb">01　今、PR TIMESがAIの引用元として目立っている</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <h3 class="h-section">問われるのは、やみくもに出すことではない</h3>
+  <p class="lead">ただ、プレスリリースは出せばよい、数を増やせばよい、という話ではありません。AIに参照されることを考えるなら、<b>なぜPR TIMESが参照されるのか</b>、<b>どんな情報が拾われやすいのか</b>、<b>どのように書けば発表の内容や根拠が正しく伝わるのか</b>まで考える必要があります。</p>
+  <p class="lead">また、プレスリリース自体の濫造は、企業のブランディングを低下させるため、当然<b>質にもこだわる必要</b>があります。</p>
+  <p class="lead">なぜPR TIMESはAIに参照されるのでしょうか。また、AIに参照されるプレスリリースは、どのような点に注意して作ればよいのでしょうか。次章から、その順に見ていきます。</p>
+  <div class="callout">
+    <div class="ttl">本章のまとめ</div>
+    <div class="meta">
+      <div>● Ahrefsの公表データで、ChatGPTの引用元としてprtimes.jpが2位（95,655回）。</div>
+      <div>● PR TIMESは「メディア向けの配信先」だけでなく、「AIが読む公開情報の場」になっている。</div>
+      <div>● 数や勢いではなく、参照されやすい設計をした一本が問われる段階に入っている。</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">04</span></div>
+</section>
+
+<!-- Chapter 2 p1 -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">02　なぜPR TIMESはAIに参照されるのか</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <div class="chap-banner"><div class="num">02</div><div class="title">なぜPR TIMESは<br>AIに参照されるのか</div></div>
+  <p class="lead">PR TIMESがAIに参照されやすいのは、知名度があるからだけではありません。<b>公開されていて、見つけやすく、要点が冒頭で分かり、発信主体と根拠も確認しやすい。</b>そうした条件が重なっているからです。ここでは、その理由を4つに整理します。</p>
+  <div class="reason">
+    <h4><span class="nm">1</span>公開ページとして見つけやすい</h4>
+    <p class="lead" style="margin:2mm 0 0">OpenAIは、ChatGPT検索には公開サイトであれば表示されうること、要約や引用に含めるには <b>OAI-SearchBot をブロックしない</b>ことが重要だと案内しています。Googleも、AI Overviews や AI Mode に出るために特別な追加要件はなく、通常の検索と同じく、インデックスされ、スニペット付きで表示できるページであることが前提だと説明しています。PR TIMESの robots.txt では、全ユーザーエージェントを許可し、通常のサイトマップに加えて<b>ニュース用サイトマップ</b>も公開しています。AIに見つけられるための技術的な入口が、最初から閉じていないということです。</p>
+  </div>
+  <div class="reason">
+    <h4><span class="nm">2</span>発表の骨子が、冒頭でつかみやすい</h4>
+    <p class="lead" style="margin:2mm 0 0">プレスリリースの記事は、要点が早い段階で分かる形にしやすいという強みもあります。PR TIMES MAGAZINEでは、タイトルは<b>5W2Hを端的に伝える</b>ためのもの、サブタイトルではタイトルに入りきらなかった理由や方法を補い、タイトルとサブタイトルだけで内容がほぼ伝わる形が理想だと説明しています。リード文についても、5W2Hと具体的な数字を入れ、リード文だけで全体が理解できるように書くことが勧められています。これはAI向けに作られた特別ルールではありませんが、AIが要点をつかみ、リンク先を根拠として扱う場面を考えると、<b>冒頭で骨子が読める型</b>と相性がよいと考えられます。</p>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">05</span></div>
+</section>
+
+<!-- Chapter 2 p2 -->
+<section class="page">
+  <div class="ph"><span class="crumb">02　なぜPR TIMESはAIに参照されるのか</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <div class="reason">
+    <h4><span class="nm">3</span>発信主体と根拠が、同じページにそろいやすい</h4>
+    <p class="lead" style="margin:2mm 0 0">プレスリリースは、誰が発表した情報なのかを示しやすい場でもあります。PR TIMES MAGAZINEでは、プレスリリースの基本構成として、<b>タイトル、サブタイトル、リード文、本文、企業情報、問い合わせ先</b>の6要素を挙げています。問い合わせ先についても、担当者名や直通の連絡先まで明記することが勧められています。</p>
+    <p class="lead" style="margin:2mm 0 0">調査リリースではさらに、調査背景、調査概要、サマリー、本文、まとめを入れ、十分な回答者数を確保し、自社宣伝に寄りすぎないよう注意することが示されています。発信主体、数字の条件、問い合わせ先が同じページで確認しやすいので、<b>AIにとっても人にとっても、根拠を追いやすい情報</b>になりやすいわけです。</p>
+  </div>
+  <div class="reason">
+    <h4><span class="nm">4</span>新しい公式情報が、継続して集まっている</h4>
+    <p class="lead" style="margin:2mm 0 0">もうひとつ見逃せないのが、PR TIMESに集まる情報の量と更新頻度です。PR TIMESの公式発表によると、利用企業数は<b>12万1,000社超</b>、月間のプレスリリース件数は<b>4万6,000件超</b>、累計では<b>200万件超</b>です。国内上場企業の<b>64%超</b>が利用しているとも案内されています。新しい発表が継続して出てきて、しかも企業自身が出す一次情報がまとまっている。AIが新しい公開情報を拾いにいく場として、PR TIMESが目に入りやすいのは自然です。</p>
+  </div>
+  <div class="callout">
+    <div class="ttl">第2章のまとめ：PR TIMESがAIに参照される4つの理由</div>
+    <div class="meta">
+      <div>1. 公開ページとして見つけやすい（robots/サイトマップで開かれている）</div>
+      <div>2. 発表の骨子が、冒頭でつかみやすい（タイトル＋リードで要点）</div>
+      <div>3. 発信主体と根拠が、同じページにそろいやすい（企業情報・問い合わせ先・調査概要）</div>
+      <div>4. 新しい公式情報が、継続して集まっている（121,000社超／月46,000件超）</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">06</span></div>
+</section>
+
+<!-- Chapter 3 p1 -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">03　AIに参照されやすいプレスリリースの書き方</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <div class="chap-banner"><div class="num">03</div><div class="title">AIに参照されやすい<br>プレスリリースの書き方</div></div>
+  <p class="lead">PR TIMESには、AIが読み取りやすい土台があります。とはいえ、掲載された内容が同じように参照されるわけではありません。Googleは、AI表示に特別な追加要件はないと説明し、<b>重要な内容をテキストで示し、役に立つ信頼できる情報を出すこと</b>を基本にしています。意識したい点は、特別な細工ではなく、<b>発表の核心と根拠を早い段階で読めるようにすること</b>です。</p>
+  <div class="point">
+    <h4>Point 1.　タイトルとリードで、発表の核心を先に出す<small>キーワードよりも先に「誰が・何を・いつ」を提示する</small></h4>
+    <div class="pbody">
+      <p class="lead">プレスリリースにおいては、<b>タイトルは5W2Hを端的に伝える場</b>、<b>サブタイトルは「なぜ」「どうやって」を補う場</b>とされています。タイトルとサブタイトルだけで内容がほぼ伝わる形が理想とされ、リード文では5W2Hと具体的な数字を入れ、リードだけで全体が分かるように書くことが勧められています。</p>
+      <p class="lead">PR TIMESの発信でも、出発点は同じです。サービス名だけで終わらせず、<b>「誰が、何を、いつ始めるのか」「何が変わるのか」</b>を、最初に示す必要があります。</p>
+    </div>
+  </div>
+  <div class="point">
+    <h4>Point 2.　本文の前半で、数字と条件まで書く<small>逆三角形構成で「証拠」を冒頭近くに置く</small></h4>
+    <div class="pbody">
+      <p class="lead">要点だけ先に書き、根拠を後ろへ回す書き方では、読み手にもAIにも内容が伝わりにくくなります。プレスリリースでは、最も伝えたいことを冒頭に置く<b>「逆三角形」の構成</b>が勧められています。Googleも、AI機能で扱われるページについて、<b>重要な内容をテキストで利用できるようにしておく</b>ことを求めています。</p>
+      <p class="lead">数字を使うなら、<b>数字が何を示すのか、対象は誰か、比較条件は何か、いつの話か</b>まで、本文前半の近い位置で示した方が伝わります。グラフを入れる場合でも、重要な数字は本文でも拾えるようにしておく方が安定します。</p>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">07</span></div>
+</section>
+
+<!-- Chapter 3 p2 -->
+<section class="page">
+  <div class="ph"><span class="crumb">03　AIに参照されやすいプレスリリースの書き方</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <div class="point">
+    <h4>Point 3.　発表だけでなく、前提まで一つのページに置く<small>関連サブトピックまで「同じURL」で完結させる</small></h4>
+    <div class="pbody"><p class="lead">Googleは、AI OverviewsやAI Modeで、<b>ひとつの質問から関連する複数の検索を広げながら答えをつくる</b>と説明しています。発表内容だけではなく、<b>「誰向けか」「どの課題を解決するのか」「既存の方法と何が違うのか」「いつから使えるのか」</b>といった前提まで、一つのページに置いておく意味は大きいです。AIに参照されやすいプレスリリースは、発表だけを置く文書ではなく、<b>発表を理解するための前提までそろえた文書</b>です。</p></div>
+  </div>
+  <div class="point">
+    <h4>Point 4.　調査データで、「なぜ今か」を示す<small>独自調査は「説明」を「判断材料」に変える</small></h4>
+    <div class="pbody">
+      <p class="lead">発表の意味をはっきりさせる材料として、<b>調査データは相性がよい</b>です。PR TIMESでは、調査結果を予定しているプレスリリースの理解を促すために使う方法と、調査結果そのものを新情報として配信する方法の両方が案内されています。</p>
+      <p class="lead">Googleも、役に立つ情報かどうかを見る基準として、<b>「独自の情報、報告、調査、分析があるか」</b>を挙げています。調査データは飾りではなく、<b>「なぜ今、発表するのか」を示す根拠</b>として使えます。新サービスの発表なら、必要とされる背景を示す調査結果を添える。取り組みの発表なら、社会や顧客の変化を示す数字を置く。発表の意味が一段伝わりやすくなりますし、社会性を帯び、PRとしてのメッセージを発信できます。</p>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">08</span></div>
+</section>
+
+<!-- Chapter 3 p3 -->
+<section class="page">
+  <div class="ph"><span class="crumb">03　AIに参照されやすいプレスリリースの書き方</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <div class="point">
+    <h4>Point 5.　調査概要とグラフは、切り出されても意味が通るようにする<small>n数・期間・対象・主体は本文テキストにも残す</small></h4>
+    <div class="pbody">
+      <p class="lead">調査データを使うなら、<b>数字だけを大きく見せても足りません</b>。PR TIMESの掲載基準では、<b>調査期間、調査主体、調査対象、有効回答数、調査方法</b>を本文内に記載することが条件とされ、調査期間の終了日から<b>6か月以内</b>の結果であることも求められています。</p>
+      <p class="lead">調査リリースのガイドでも、調査した理由を明記し、グラフには<b>「グラフタイトル」「数値」「n数」</b>を必ず入れるよう案内しています。数字がひとり歩きしないように、<b>条件と背景をセットで見せること</b>が大切です。</p>
+      <p class="lead">文字が多くなりやすい章だからこそ、グラフや図解は役に立ちます。<b>肝心な数字や結論は画像だけに置かず、本文のテキストにも残しておく方が安全</b>です。</p>
+    </div>
+  </div>
+  <div class="point">
+    <h4>Point 6.　1本のリリースで、論点を増やしすぎない<small>1プレスリリース1テーマで、ニュースの焦点を守る</small></h4>
+    <div class="pbody">
+      <p class="lead">PR TIMESでは、<b>基本は1プレスリリース1テーマ</b>と案内しています。新サービスの発表に、会社紹介、採用、提携、調査結果、将来構想まで詰め込むと、<b>何がニュースなのかがぼやけます</b>。</p>
+      <p class="lead">調査データを使う場合も同じです。調査は<b>発表の背景を支える証拠</b>として使うのか、<b>調査結果そのものをニュース</b>として出すのかを、先に決めた方がページ全体の焦点が定まります。AIに参照されやすいプレスリリースは、情報量が多い文章ではなく、<b>論点が整理された文章</b>です。</p>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">09</span></div>
+</section>
+
+<!-- Chapter 4 - bad -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">04　AIに参照されないリリースと、されやすいリリース</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <div class="chap-banner"><div class="num">04</div><div class="title">AIに参照されないリリースと<br>されやすいリリース</div></div>
+  <p class="lead">最後に、同じ「新サービスの発表」を題材に、<b>AIに参照されにくい書き方</b>と<b>参照されやすい書き方</b>を並べます。違いを生むのは、文章の上手さではなく、<b>核心・根拠・補足の順番</b>です。</p>
+  <div class="ex-card bad">
+    <div class="head"><span class="mk">×</span>AIに参照されないプレスリリースの例</div>
+    <div class="body">
+      <span class="lbl">タイトル</span>
+      <p><b>営業組織を変える、画期的な新サービスが登場</b></p>
+      <span class="lbl">サブタイトル</span>
+      <p>多くの企業が抱える課題を解決し、次世代の営業活動を支援</p>
+      <span class="lbl">リード文</span>
+      <p>株式会社ABCは、このたび営業現場を大きく変える新サービス「SalesDock」を開始します。近年は営業活動の複雑化が進み、多くの企業が課題を抱えています。当社調査でも多くの担当者が営業業務の非効率に悩んでいることが分かっており、SalesDockはそのような悩みを一気に解決するサービスです。</p>
+      <span class="lbl">本文冒頭</span>
+      <p>営業現場では、さまざまな課題が山積しています。当社が実施した調査でも、約8割が営業活動に課題を感じていることが判明しました。SalesDockはAIを活用し、営業活動のすべてを変革する次世代型プラットフォームです。今後、営業の新しいスタンダードとして市場をけん引してまいります。</p>
+      <div class="commentary">この書き方だと、何が発表なのかがタイトルで分かりません。<b>誰が何を始めるのか、いつの話か、どの数字が根拠か</b>も見えません。「約8割」という数字も、誰に聞いたのか、いつ調査したのか、何人の回答なのかがないので、根拠として弱く見えます。PR TIMESが勧める「タイトルで5W2Hを伝える」「リード文だけで概要が分かる」「調査背景や有効回答数を書く」という基本から外れています。</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">10</span></div>
+</section>
+
+<!-- Chapter 4 - good 1 -->
+<section class="page">
+  <div class="ph"><span class="crumb">04　AIに参照されないリリースと、されやすいリリース</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <div class="ex-card good">
+    <div class="head"><span class="mk">○</span>AIに参照されやすいPR TIMESの例</div>
+    <div class="body">
+      <span class="lbl">タイトル</span>
+      <p><b>BtoB営業責任者312人調査、66.4%が「見積作成が属人化している」と回答<br>株式会社ABC、営業属人化を解消する営業支援クラウド「SalesDock」を2026年4月2日に提供開始</b></p>
+      <span class="lbl">サブタイトル</span>
+      <p>従業員300人以上の企業を対象に調査。提案書・見積書の作成工程を標準化し、営業現場のばらつき解消を支援</p>
+      <span class="lbl">リード文</span>
+      <p>営業支援クラウドを開発する株式会社ABC（東京都港区、代表取締役 山田太郎）は、BtoB企業の営業責任者312人を対象に実施した調査で、<b>66.4%が「見積作成が属人化している」</b>と回答した結果を受け、提案書・見積書の作成工程を標準化する営業支援クラウド「SalesDock」を<b>2026年4月2日</b>に提供開始します。見積テンプレートの共通化、承認フローの可視化、案件ごとの進行状況の一元管理により、担当者ごとのばらつきを抑え、営業部門の業務負荷軽減を支援します。</p>
+      <span class="lbl">本文冒頭：営業現場では、「見積作成」と「提案内容のばらつき」が負担になっている</span>
+      <p>株式会社ABCは、従業員300人以上のBtoB企業に勤める営業責任者312人を対象に、営業業務の属人化に関する調査を実施しました。その結果、<b>66.4%が「見積作成が属人化している」</b>、<b>58.3%が「提案内容の品質に担当者差がある」</b>、<b>52.9%が「承認フローの遅れが受注機会の損失につながっている」</b>と回答しました。</p>
+      <span class="lbl">本文：調査結果を受け、見積・提案の標準化を支援する「SalesDock」を提供開始</span>
+      <p>上記の結果を受け、株式会社ABCは営業支援クラウド「SalesDock」を2026年4月2日に提供開始します。SalesDockは、見積テンプレートの統一、承認フローの見える化、案件情報の一元管理を通じて、営業活動のばらつきを減らすサービスです。営業現場で負担が大きい見積作成と提案準備を中心に、属人化しやすい工程から改善を進められます。</p>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">11</span></div>
+</section>
+
+<!-- Chapter 4 - good 2 -->
+<section class="page">
+  <div class="ph"><span class="crumb">04　AIに参照されないリリースと、されやすいリリース</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <div class="ex-card good">
+    <div class="head"><span class="mk">○</span>AIに参照されやすいPR TIMESの例（つづき）</div>
+    <div class="body">
+      <span class="lbl">調査結果サマリー</span>
+      <ul class="bullets">
+        <li>66.4% が「見積作成が属人化している」と回答</li>
+        <li>58.3% が「提案内容の品質に担当者差がある」と回答</li>
+        <li>52.9% が「承認フローの遅れが受注機会の損失につながっている」と回答</li>
+      </ul>
+      <span class="lbl">調査概要</span>
+      <div class="callout" style="margin:2mm 0">
+        <div class="meta">
+          <div>● 調査名：BtoB企業における営業業務の属人化に関する実態調査</div>
+          <div>● 調査期間：2026年3月10日〜2026年3月12日</div>
+          <div>● 調査方法：インターネット調査</div>
+          <div>● 調査対象：従業員300人以上のBtoB企業に勤める営業責任者</div>
+          <div>● 有効回答数：312</div>
+          <div>● 調査主体：株式会社ABC</div>
+        </div>
+      </div>
+      <span class="lbl">FAQ（抜粋）</span>
+      <p><b>Q1.</b> SalesDockは、提案書や見積書の作成、承認、案件管理の工程が複数人にまたがるBtoB企業向けの営業支援クラウドです。<br><b>Q2.</b> 見積テンプレートの共通化、承認フローの可視化、案件情報の一元管理ができます。<br><b>Q3.</b> 2026年4月2日から利用開始できます。<br><b>Q4.</b> 見積作成が属人化している企業、提案内容の品質に担当者差が出ている企業、承認フローの遅れが受注活動に影響している企業に向いています。<br><b>Q5.</b> 料金は利用人数と利用機能に応じて個別に案内します。</p>
+      <div class="commentary">この書き方だと、<b>何の発表かがタイトルで分かります</b>。誰が何を始めるのか、いつの話か、どの数字が根拠かも見えます。「66.4%」という数字にも、誰に聞いたのか、いつ調査したのか、何人の回答なのかが添えられているので、根拠として受け取りやすくなります。サービスの説明も、調査結果を受けて何を提供するのかに絞られていて、話のつながりが分かります。さらにFAQがあるので、本文で触れきれない対象企業、機能、料金、調査内容まで同じページで確認できます。<b>発表内容、根拠、補足情報が一続きで読める</b>ので、読者にもAIにも参照されやすい形です。</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">12</span></div>
+</section>
+
+<!-- Chapter 5 - intro -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">05　調査PRのプロが手がける「戦略的プレスリリース」</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <div class="chap-banner"><div class="num">05</div><div class="title">調査PRのプロが手がける<br>「戦略的プレスリリース」</div></div>
+  <p class="lead">ここまで見てきたように、<b>AIに参照されるプレスリリースをつくるには、原稿だけを整えても足りません</b>。見出しになる論点を決め、裏付けになる数字を取り、その数字が伝わる順番で本文とFAQまで設計する必要があります。</p>
+  <p class="lead">私たちIDEATECHは、2010年から戦略PR支援を行い、<b>累計800社以上</b>の企業を支援してきました。<b>2,500件以上</b>の実績を持つ<b>リサピー®</b>は、その戦略PRの視点を、調査企画、アンケート実査、集計、プレスリリース制作まで一つにつないだサービスです。</p>
+  <p class="lead">私たちが調査PRで重視してきたのは、数字を集めることではありません。<b>ニュースになる論点があるか。見出しになる数字があるか。業界や社会の変化として読める文脈になっているか。</b>そこを設計してきたからこそ、支援した調査PRが<b>月5本以上Yahoo!ニュースに取り上げられたり、150以上の専門媒体に転載・掲載</b>されたりしてきました。</p>
+  <p class="lead">AIに参照されるプレスリリースでも、求められる考え方は同じです。<b>発表の要点、根拠、補足情報が一つのページでつながっていること。</b>その設計に、戦略PRで培ってきた視点がそのまま生きます。戦略PRコンサルティングの知見を生かした調査PRは、AI時代の情報流通においても引用されやすいコンテンツになると確信しています。</p>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">13</span></div>
+</section>
+
+<!-- Plans -->
+<section class="page">
+  <div class="ph"><span class="crumb">05　調査PRのプロが手がける「戦略的プレスリリース」</span><img src="assets/logo-color-light.png" alt="IDEATECH"></div>
+  <h3 class="h-section">提供プラン：独自調査付きの戦略的プレスリリース制作</h3>
+  <p class="lead">調査テーマ設計、設問設計、アンケート実査、集計・グラフ化、プレスリリース原稿作成、FAQ設計、公開前の最終調整までを<b>一括で実施</b>します。単発で1本ずつ作るのではなく、複数本を前提に論点を設計することで、AIにもメディアにも伝わる一次情報を積み上げていきます。</p>
+
+  <div class="plan-box">
+    <span class="tag">3本セット</span>
+    <div class="ttl-row"><div class="ttl">まずは自社に合う切り口をつくりたい企業向け</div><div class="price">120<span class="sm">万円（税抜）</span></div></div>
+    <p class="lead" style="margin:2mm 0 0">3本分のテーマをまとめて設計し、調査から原稿化まで一気通貫で進めます。調査付きプレスリリースを継続的に出したことがない企業や、まずは型をつくりたい企業に向いています。</p>
+  </div>
+  <div class="plan-box">
+    <span class="tag">5本セット</span>
+    <div class="ttl-row"><div class="ttl">複数の論点を積み上げたい企業向け</div><div class="price">190<span class="sm">万円（税抜）</span></div></div>
+    <p class="lead" style="margin:2mm 0 0">単発の発表を並べるのではなく、5本全体で訴求の流れをつくりながら、調査とプレスリリースを連動させます。業界課題、顧客課題、サービス価値を行き来しながら、参照されやすい一次情報を増やしたい企業に向いています。</p>
+  </div>
+  <div class="plan-box">
+    <span class="tag">10本セット</span>
+    <div class="ttl-row"><div class="ttl">年間で継続発信したい企業向け</div><div class="price">360<span class="sm">万円（税抜）</span></div></div>
+    <p class="lead" style="margin:2mm 0 0">事業テーマと広報テーマを横断して設計し、調査データを蓄積しながら、プレスリリースを単発の告知ではなく<b>情報資産</b>として育てていきます。検索だけでなくAIにも継続的に参照される状態をつくりたい企業に向いています。</p>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">14</span></div>
+</section>
+
+<!-- References -->
+<section class="page chap-intro">
+  <div class="ph"><span class="crumb">参考・出典</span><img src="assets/logo-color-dark.png" alt="IDEATECH"></div>
+  <h1 class="h-intro" style="font-size:22pt">参考・出典</h1>
+  <div class="refs">
+    <div class="item"><span class="lbl">[1]</span><div><div class="src">Ahrefs Brand Radar「AI が最も頼りにしているドメイン TOP 10」（2026年4月公表）</div><a>https://ahrefs.com/blog/ja/brand-radar-top-10-cited-domains-2026-update/</a></div></div>
+    <div class="item"><span class="lbl">[2]</span><div><div class="src">Google Search Central「AI features and your website」</div><a>https://developers.google.com/search/docs/appearance/ai-features</a></div></div>
+    <div class="item"><span class="lbl">[3]</span><div><div class="src">Google Search Central「Creating helpful, reliable, people-first content」</div><a>https://developers.google.com/search/docs/fundamentals/creating-helpful-content?hl=ja</a></div></div>
+    <div class="item"><span class="lbl">[4]</span><div><div class="src">OpenAI Help Center「ChatGPT search」「Publishers and Developers FAQ」</div><a>https://help.openai.com/en/articles/9237897-chatgpt-search</a><br><a>https://help.openai.com/en/articles/12627856-publishers-and-developers-faq</a></div></div>
+    <div class="item"><span class="lbl">[5]</span><div><div class="src">PR TIMES MAGAZINE プレスリリース作成ガイド／調査リリース掲載ガイド</div><a>https://prtimes.jp/magazine/</a></div></div>
+    <div class="item"><span class="lbl">[6]</span><div><div class="src">株式会社PR TIMES 公式発表（利用企業数・配信件数・上場企業利用率）</div><a>https://prtimes.co.jp/</a></div></div>
+    <div class="item"><span class="lbl">[7]</span><div><div class="src">IDEATECH「リサピー®」サービスページ（戦略PR・調査PR支援）</div></div></div>
+  </div>
+  <div class="callout" style="margin-top:8mm">
+    <div class="ttl">お問い合わせ</div>
+    <div class="meta">
+      <div>株式会社IDEATECH（イデアテック）　リサピー®ご相談窓口</div>
+      <div>※本ガイドの内容、提供プランへのご質問はお問い合わせフォームより承ります。</div>
+    </div>
+  </div>
+  <div class="pf"><img class="rp" src="assets/repopi.png" alt=""><span>Copyright©2026 IDEATECH Inc. All rights reserved　schemed by レポピー</span><span class="pn">15</span></div>
+</section>
+
+</body>
+</html>
